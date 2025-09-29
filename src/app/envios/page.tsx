@@ -9,7 +9,7 @@ export default function EnviosForm() {
   const [peso, setPeso] = useState("");
   const [comentarios, setComentarios] = useState("");
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await fetch("/api/envios", {
       method: "POST",
