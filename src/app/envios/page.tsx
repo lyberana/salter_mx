@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import Layout from "@/components/layout";
 
 export default function EnviosForm() {
   const [folio, setFolio] = useState("");
@@ -20,23 +21,28 @@ export default function EnviosForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto mt-10">
-      <Input
-        placeholder="Folio"
-        value={folio}
-        onChange={(e) => setFolio(e.target.value)}
-      />
-      <Input
-        placeholder="Peso (kg)"
-        value={peso}
-        onChange={(e) => setPeso(e.target.value)}
-      />
-      <Textarea
-        placeholder="Comentarios"
-        value={comentarios}
-        onChange={(e) => setComentarios(e.target.value)}
-      />
-      <Button type="submit">Registrar Envío</Button>
-    </form>
+    <Layout>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 max-w-md mx-auto mt-10"
+      >
+        <Input
+          placeholder="Folio"
+          value={folio}
+          onChange={(e) => setFolio(e.target.value)}
+        />
+        <Input
+          placeholder="Peso (kg)"
+          value={peso}
+          onChange={(e) => setPeso(e.target.value)}
+        />
+        <Textarea
+          placeholder="Comentarios"
+          value={comentarios}
+          onChange={(e) => setComentarios(e.target.value)}
+        />
+        <Button type="submit">Registrar Envío</Button>
+      </form>
+    </Layout>
   );
 }
