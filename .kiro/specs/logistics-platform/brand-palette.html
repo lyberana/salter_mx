@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GF SALTER — Paleta de Diseño v1.0.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #F8F9FB;
+      color: #0F1F3D;
+      padding: 40px 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: #0F1F3D;
+      border-radius: 16px;
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .header img { height: 56px; object-fit: contain; }
+    .header-text h1 { color: #fff; font-size: 1.5rem; font-weight: 700; }
+    .header-text p { color: #8A96A8; font-size: 0.875rem; margin-top: 4px; }
+    .version-badge {
+      margin-left: auto;
+      background: #1A3260;
+      color: #FAA307;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* Section titles */
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #0F1F3D;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #DDE3EC;
+    }
+    section { margin-bottom: 48px; }
+
+    /* Color grid */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .color-card {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #DDE3EC;
+      background: #fff;
+    }
+    .color-swatch {
+      height: 80px;
+      width: 100%;
+    }
+    .color-info {
+      padding: 10px 12px;
+    }
+    .color-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0F1F3D;
+    }
+    .color-token {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: #4A5568;
+      margin-top: 2px;
+    }
+    .color-hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #8A96A8;
+      margin-top: 4px;
+    }
+
+    /* Status badges */
+    .badge-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Audit level badges */
+    .level-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .level-badge {
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Typography */
+    .type-scale { display: flex; flex-direction: column; gap: 12px; }
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 12px 16px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #DDE3EC;
+    }
+    .type-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: #8A96A8;
+      min-width: 80px;
+    }
+    .type-sample { color: #0F1F3D; }
+
+    /* Logo usage */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .logo-card {
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #DDE3EC;
+    }
+    .logo-card img { object-fit: contain; }
+    .logo-card-label {
+      font-size: 0.75rem;
+      color: #4A5568;
+      text-align: center;
+    }
+
+    /* UI preview */
+    .ui-preview {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #DDE3EC;
+      display: flex;
+      height: 320px;
+    }
+    .sidebar-preview {
+      background: #0F1F3D;
+      width: 200px;
+      flex-shrink: 0;
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo {
+      padding: 0 16px 20px;
+      border-bottom: 1px solid #1A3260;
+    }
+    .sidebar-logo img { height: 32px; object-fit: contain; }
+    .sidebar-nav { padding: 12px 0; flex: 1; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      color: #8A96A8;
+      cursor: pointer;
+    }
+    .nav-item.active {
+      background: #1A3260;
+      color: #fff;
+      border-left: 3px solid #E85D04;
+    }
+    .nav-item.active .nav-icon { color: #E85D04; }
+    .nav-icon { font-size: 1rem; }
+    .main-preview {
+      flex: 1;
+      background: #F8F9FB;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .preview-header {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0F1F3D;
+      margin-bottom: 16px;
+    }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .kpi-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #DDE3EC;
+    }
+    .kpi-label { font-size: 0.65rem; color: #8A96A8; }
+    .kpi-value { font-size: 1.1rem; font-weight: 700; color: #0F1F3D; margin-top: 2px; }
+    .kpi-value.orange { color: #E85D04; }
+    .kpi-value.green { color: #15803D; }
+    .kpi-value.blue { color: #1A56DB; }
+    .table-preview {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #DDE3EC;
+      overflow: hidden;
+    }
+    .table-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      font-size: 0.7rem;
+      border-bottom: 1px solid #EEF1F6;
+    }
+    .table-row.header { background: #EEF1F6; font-weight: 600; color: #4A5568; }
+    .folio { font-family: 'JetBrains Mono', monospace; color: #0F1F3D; min-width: 90px; }
+    .mini-badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      font-weight: 500;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #8A96A8;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #DDE3EC;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:44px;height:44px;background:#E85D04;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1.1rem;flex-shrink:0;">GF</div>
+      <div>
+        <div style="color:#fff;font-weight:800;font-size:1.1rem;line-height:1.1;">SALTER</div>
+        <div style="color:#FAA307;font-size:0.7rem;letter-spacing:0.06em;font-weight:500;">ALTERNATIVA EN MOVIMIENTO</div>
+      </div>
+    </div>
+    <div class="header-text">
+      <h1>GF SALTER — Paleta de Diseño</h1>
+      <p>Plataforma Logística · Alternativa en movimiento</p>
+    </div>
+    <span class="version-badge">v1.0.0 · 2026-04-03</span>
+  </div>
+
+  <!-- Brand Colors -->
+  <section>
+    <h2>Colores de Marca</h2>
+    <div class="color-grid">
+      <div class="color-card">
+        <div class="color-swatch" style="background:#0F1F3D;"></div>
+        <div class="color-info">
+          <div class="color-name">Azul Marino</div>
+          <div class="color-token">brand-navy</div>
+          <div class="color-hex">#0F1F3D</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#1A3260;"></div>
+        <div class="color-info">
+          <div class="color-name">Azul Marino Claro</div>
+          <div class="color-token">brand-navy-light</div>
+          <div class="color-hex">#1A3260</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#E85D04;"></div>
+        <div class="color-info">
+          <div class="color-name">Naranja GF SALTER</div>
+          <div class="color-token">brand-orange</div>
+          <div class="color-hex">#E85D04</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#F48C06;"></div>
+        <div class="color-info">
+          <div class="color-name">Naranja Claro</div>
+          <div class="color-token">brand-orange-light</div>
+          <div class="color-hex">#F48C06</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FAA307;"></div>
+        <div class="color-info">
+          <div class="color-name">Ámbar</div>
+          <div class="color-token">brand-amber</div>
+          <div class="color-hex">#FAA307</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#F8F9FB; border-bottom:1px solid #DDE3EC;"></div>
+        <div class="color-info">
+          <div class="color-name">Fondo Base</div>
+          <div class="color-token">surface-base</div>
+          <div class="color-hex">#F8F9FB</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#EEF1F6; border-bottom:1px solid #DDE3EC;"></div>
+        <div class="color-info">
+          <div class="color-name">Fondo Atenuado</div>
+          <div class="color-token">surface-muted</div>
+          <div class="color-hex">#EEF1F6</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#DDE3EC; border-bottom:1px solid #DDE3EC;"></div>
+        <div class="color-info">
+          <div class="color-name">Borde Estándar</div>
+          <div class="color-token">border-default</div>
+          <div class="color-hex">#DDE3EC</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Status Colors -->
+  <section>
+    <h2>Estados de Envío</h2>
+    <div class="badge-grid">
+      <span class="badge" style="background:#F1F3F5; color:#4A5568;">
+        <span class="badge-dot" style="background:#4A5568;"></span>Pendiente
+      </span>
+      <span class="badge" style="background:#EBF4FF; color:#1A56DB;">
+        <span class="badge-dot" style="background:#1A56DB;"></span>Recolectado
+      </span>
+      <span class="badge" style="background:#FFFBEB; color:#B45309;">
+        <span class="badge-dot" style="background:#B45309;"></span>En Tránsito
+      </span>
+      <span class="badge" style="background:#FFF7ED; color:#C2410C;">
+        <span class="badge-dot" style="background:#C2410C;"></span>En Reparto
+      </span>
+      <span class="badge" style="background:#F0FDF4; color:#15803D;">
+        <span class="badge-dot" style="background:#15803D;"></span>Entregado
+      </span>
+      <span class="badge" style="background:#FEF2F2; color:#B91C1C;">
+        <span class="badge-dot" style="background:#B91C1C;"></span>No Entregado
+      </span>
+      <span class="badge" style="background:#F8FAFC; color:#64748B;">
+        <span class="badge-dot" style="background:#64748B;"></span>Cancelado
+      </span>
+    </div>
+  </section>
+
+  <!-- Audit Log Levels -->
+  <section>
+    <h2>Niveles de Audit Log</h2>
+    <div class="level-grid">
+      <span class="level-badge" style="background:#EBF4FF; color:#1A56DB;">Info</span>
+      <span class="level-badge" style="background:#FFFBEB; color:#B45309;">Warn</span>
+      <span class="level-badge" style="background:#FFF7ED; color:#C2410C;">Error</span>
+      <span class="level-badge" style="background:#FEF2F2; color:#B91C1C;">Critical</span>
+    </div>
+  </section>
+
+  <!-- Typography -->
+  <section>
+    <h2>Tipografía — Inter</h2>
+    <div class="type-scale">
+      <div class="type-row">
+        <span class="type-label">text-3xl · 700</span>
+        <span class="type-sample" style="font-size:1.875rem; font-weight:700;">1,248 Envíos</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">text-xl · 700</span>
+        <span class="type-sample" style="font-size:1.25rem; font-weight:700;">Gestión de Envíos</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">text-base · 500</span>
+        <span class="type-sample" style="font-size:1rem; font-weight:500;">Orden ORD-202604-00042 confirmada</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">text-sm · 400</span>
+        <span class="type-sample" style="font-size:0.875rem; font-weight:400; color:#4A5568;">Remitente: Empresa Ejemplo S.A. de C.V.</span>
+      </div>
+      <div class="type-row">
+        <span class="type-label">mono · 400</span>
+        <span class="type-sample" style="font-family:'JetBrains Mono',monospace; font-size:0.875rem; color:#0F1F3D;">FOL-2026-00123 · RFC: XAXX010101000</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logo Usage -->
+  <section>
+    <h2>Uso del Logo</h2>
+    <div class="logo-grid">
+      <div class="logo-card" style="background:#0F1F3D;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;">
+          <div style="width:36px;height:36px;background:#E85D04;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1rem;flex-shrink:0;">GF</div>
+          <div>
+            <div style="color:#fff;font-weight:700;font-size:0.95rem;line-height:1.1;">SALTER</div>
+            <div style="color:#FAA307;font-size:0.65rem;font-weight:500;letter-spacing:0.05em;">ALTERNATIVA EN MOVIMIENTO</div>
+          </div>
+        </div>
+        <span class="logo-card-label" style="color:#8A96A8;">Sidebar expandido · fondo navy<br/><em style="font-size:0.65rem;">(pendiente logo transparente del cliente)</em></span>
+      </div>
+      <div class="logo-card" style="background:#fff;">
+        <img src="https://salter.com.mx/gallery/45197055.png" style="max-width:120px; height:40px; mix-blend-mode: multiply;" alt="Logo header" onerror="this.outerHTML='<div style=\'color:#0F1F3D;font-size:0.8rem;font-weight:700;\'>GF SALTER</div>'" />
+        <span class="logo-card-label">Header móvil<br/>máx. 120px · fondo blanco</span>
+      </div>
+      <div class="logo-card" style="background:#F8F9FB;">
+        <img src="https://salter.com.mx/gallery/45197055.png" style="max-width:180px; height:56px; mix-blend-mode: multiply;" alt="Logo rastreo" onerror="this.outerHTML='<div style=\'color:#0F1F3D;font-size:0.8rem;font-weight:700;\'>GF SALTER</div>'" />
+        <span class="logo-card-label">Página de rastreo público<br/>máx. 180px · fondo claro</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- UI Preview -->
+  <section>
+    <h2>Vista Previa — Dashboard</h2>
+    <div class="ui-preview">
+      <!-- Sidebar -->
+      <div class="sidebar-preview">
+        <div class="sidebar-logo">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:28px;height:28px;background:#E85D04;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.7rem;flex-shrink:0;">GF</div>
+            <div>
+              <div style="color:#fff;font-weight:700;font-size:0.8rem;line-height:1.1;">SALTER</div>
+              <div style="color:#FAA307;font-size:0.55rem;letter-spacing:0.04em;">EN MOVIMIENTO</div>
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-nav">
+          <div class="nav-item active"><span class="nav-icon">⊞</span> Dashboard</div>
+          <div class="nav-item"><span class="nav-icon">📦</span> Envíos</div>
+          <div class="nav-item"><span class="nav-icon">📋</span> Órdenes</div>
+          <div class="nav-item"><span class="nav-icon">🚚</span> Flota</div>
+          <div class="nav-item"><span class="nav-icon">👥</span> Remitentes</div>
+          <div class="nav-item"><span class="nav-icon">📥</span> Importación</div>
+        </div>
+      </div>
+      <!-- Main -->
+      <div class="main-preview">
+        <div class="preview-header">Dashboard</div>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Envíos</div>
+            <div class="kpi-value">1,248</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">En Tránsito</div>
+            <div class="kpi-value orange">34</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Entregados Hoy</div>
+            <div class="kpi-value green">87</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Vehículos Activos</div>
+            <div class="kpi-value blue">6</div>
+          </div>
+        </div>
+        <div class="table-preview">
+          <div class="table-row header">
+            <span class="folio">Folio</span>
+            <span style="flex:1">Consignatario</span>
+            <span>Estado</span>
+          </div>
+          <div class="table-row">
+            <span class="folio">FOL-2026-001</span>
+            <span style="flex:1; font-size:0.7rem; color:#4A5568;">Empresa ABC</span>
+            <span class="mini-badge" style="background:#FFF7ED; color:#C2410C;">En Reparto</span>
+          </div>
+          <div class="table-row">
+            <span class="folio">FOL-2026-002</span>
+            <span style="flex:1; font-size:0.7rem; color:#4A5568;">Distribuidora XYZ</span>
+            <span class="mini-badge" style="background:#F0FDF4; color:#15803D;">Entregado</span>
+          </div>
+          <div class="table-row">
+            <span class="folio">FOL-2026-003</span>
+            <span style="flex:1; font-size:0.7rem; color:#4A5568;">Comercial Norte</span>
+            <span class="mini-badge" style="background:#FFFBEB; color:#B45309;">En Tránsito</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    GF SALTER Logistics Platform · UI Design Spec v1.0.0 · 2026-04-03 · Generado por Kiro
+  </footer>
+
+</body>
+</html>

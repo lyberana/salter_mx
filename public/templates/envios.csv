@@ -1,0 +1,2 @@
+folio,pesoKg,tipoContenido,valorDeclarado,remitenteId,consignatarioId,comentarios
+ENV-001,12.5,Electrónicos,5000,uuid-remitente,uuid-consignatario,Frágil
