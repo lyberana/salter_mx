@@ -28,7 +28,7 @@ export function SearchableSelect({
   const [loading, setLoading] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("");
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout>(undefined);
 
   // Close on outside click
   useEffect(() => {
