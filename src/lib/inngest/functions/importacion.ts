@@ -9,8 +9,7 @@ import * as remitenteRepo from "@/lib/repositories/remitentes";
 import { logEvent } from "@/lib/services/auditLog";
 
 export const importacionProcesar = inngest.createFunction(
-  { id: "importacion-procesar", name: "Procesar Importación" },
-  { event: "importacion/procesar" },
+  { id: "importacion-procesar", name: "Procesar Importación", triggers: [{ event: "importacion/procesar" }] },
   async ({ event }) => {
     const { importacionId, fileBuffer, filename, entidad, userId, dryRun } = event.data as {
       importacionId: string;

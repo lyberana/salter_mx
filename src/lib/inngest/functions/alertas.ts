@@ -2,8 +2,7 @@ import { inngest } from "@/lib/inngest/client";
 import { logger } from "@/lib/logger";
 
 export const alertaCritical = inngest.createFunction(
-  { id: "alerta-critical", name: "Alerta Crítica" },
-  { event: "alerta/critical" },
+  { id: "alerta-critical", name: "Alerta Crítica", triggers: [{ event: "alerta/critical" }] },
   async ({ event }) => {
     const { evento, errorMessage, stackTrace, correlationId, userId, entidad, entidadId } = event.data;
 
@@ -14,8 +13,6 @@ export const alertaCritical = inngest.createFunction(
       errorMessage,
     }, "Processing critical alert");
 
-    // TODO: Replace with Resend email in R2 Task 41
-    // For now, log the alert that would be sent
     logger.warn({
       event: "alerta.critical.email_placeholder",
       to: "admin@gfsalter.com",
@@ -28,8 +25,7 @@ export const alertaCritical = inngest.createFunction(
 );
 
 export const alertaThrottled = inngest.createFunction(
-  { id: "alerta-throttled", name: "Alerta Agrupada" },
-  { event: "alerta/throttled" },
+  { id: "alerta-throttled", name: "Alerta Agrupada", triggers: [{ event: "alerta/throttled" }] },
   async ({ event }) => {
     const { evento, count, lastError, correlationId } = event.data;
 
@@ -40,7 +36,6 @@ export const alertaThrottled = inngest.createFunction(
       count,
     }, "Processing throttled alert");
 
-    // TODO: Replace with Resend email in R2 Task 41
     logger.warn({
       event: "alerta.throttled.email_placeholder",
       to: "admin@gfsalter.com",

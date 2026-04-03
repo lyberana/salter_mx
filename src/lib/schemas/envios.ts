@@ -51,7 +51,7 @@ export const addImagenSchema = z.object({
   filename:  z.string().min(1, "El nombre de archivo es requerido"),
   sizeBytes: z.number().int().positive("El tamaño debe ser mayor a 0"),
   mimeType:  z.enum(["image/jpeg", "image/png"], {
-    errorMap: () => ({ message: "Solo se permiten imágenes JPG o PNG" }),
+    message: "Solo se permiten imágenes JPG o PNG",
   }),
 });
 
