@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireSession } from "@/lib/middleware/auth";
+import { requireSession, requireRole } from "@/lib/middleware/auth";
 import { withIdempotency } from "@/lib/middleware/idempotency";
 import { getRequestLogger } from "@/lib/context/request-context";
-import { createOrdenSchema } from "@/lib/schemas/ordenes";
-import * as service from "@/lib/services/ordenes";
+import { createGuiaSchema } from "@/lib/schemas/guias";
+import * as guiasService from "@/lib/services/guias";
 
 export async function GET(req: NextRequest) {
   const log = getRequestLogger(req);
@@ -11,7 +11,12 @@ export async function GET(req: NextRequest) {
   if (sessionOrError instanceof NextResponse) return sessionOrError;
 
   try {
-    const result = await service.listOrdenes();
+    const { searchParams } = new URL(req.url);
+    const page = searchParams.get("page") ? Number(searchParams.get("page")) : undefined;
+    const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : undefined;
+    const estado = searchParams.get("estado") ?? undefined;
+
+    const result = await guiasService.listGuias({ page, limit, estado });
     if (!result.ok) {
       return NextResponse.json(
         { data: null, errors: [{ code: result.code, message: result.message }] },
@@ -20,7 +25,7 @@ export async function GET(req: NextRequest) {
     }
     return NextResponse.json({ data: result.data });
   } catch (err) {
-    log.error({ err }, "Error listing órdenes");
+    log.error({ err }, "Error listing guías");
     return NextResponse.json(
       { data: null, errors: [{ code: "SERVER_ERROR", message: "Error interno" }] },
       { status: 500 }
@@ -31,15 +36,13 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   return withIdempotency(req, async (request) => {
     const log = getRequestLogger(request);
-    const sessionOrError = await requireSession(request);
+    const checkRole = requireRole(["coordinador", "administrador"]);
+    const sessionOrError = await checkRole(request);
     if (sessionOrError instanceof NextResponse) return sessionOrError;
 
     try {
       const body = await request.json();
-      const parsed = createOrdenSchema.safeParse({
-        ...body,
-        createdBy: (sessionOrError.user as { id?: string }).id,
-      });
+      const parsed = createGuiaSchema.safeParse(body);
       if (!parsed.success) {
         return NextResponse.json(
           {
@@ -54,19 +57,19 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const result = await service.createOrden(parsed.data);
+      const userId = (sessionOrError.user as { id?: string }).id!;
+      const result = await guiasService.createGuia(parsed.data, userId);
       if (!result.ok) {
-        const status = result.code === "ENVIO_EN_ORDEN_ACTIVA" ? 409 : 422;
         return NextResponse.json(
           { data: null, errors: [{ code: result.code, message: result.message, field: result.field }] },
-          { status }
+          { status: 422 }
         );
       }
 
-      log.info({ event: "orden.created", id: result.data.id });
+      log.info({ event: "guia.created", id: result.data.id, folio: result.data.folio });
       return NextResponse.json({ data: result.data }, { status: 201 });
     } catch (err) {
-      log.error({ err }, "Error creating orden");
+      log.error({ err }, "Error creating guía");
       return NextResponse.json(
         { data: null, errors: [{ code: "SERVER_ERROR", message: "Error interno" }] },
         { status: 500 }

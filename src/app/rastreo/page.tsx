@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Package,
   Search,
@@ -61,8 +62,26 @@ const demoTracking: TrackingStep[] = [
 ];
 
 export default function RastreoPage() {
+  return (
+    <Suspense>
+      <RastreoContent />
+    </Suspense>
+  );
+}
+
+function RastreoContent() {
+  const searchParams = useSearchParams();
   const [folio, setFolio] = useState("");
   const [showResult, setShowResult] = useState(false);
+
+  // Auto-fill folio from URL query param (from QR scan)
+  useEffect(() => {
+    const folioParam = searchParams.get("folio");
+    if (folioParam) {
+      setFolio(folioParam);
+      setShowResult(true);
+    }
+  }, [searchParams]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

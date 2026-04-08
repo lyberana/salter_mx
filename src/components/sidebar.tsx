@@ -15,8 +15,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: "🏠", key: "dashboard" },
-  { href: "/envios", label: "Envíos", icon: "📦", key: "envios" },
-  { href: "/ordenes", label: "Órdenes", icon: "📋", key: "ordenes" },
+  { href: "/guias", label: "Guías", icon: "📋", key: "guias" },
   { href: "/remitentes", label: "Remitentes", icon: "👤", key: "remitentes" },
   { href: "/consignatarios", label: "Consignatarios", icon: "📍", key: "consignatarios" },
   { href: "/flota", label: "Flota", icon: "🚛", key: "flota" },

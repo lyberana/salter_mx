@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useBreadcrumbOverrides } from "@/lib/context/breadcrumb-context";
+import { useSelectedEntity } from "@/lib/context/selected-entity-context";
 
 interface Remitente {
   id: string; nombre: string; rfc: string; calle: string; numExt: string;
-  colonia: string; municipio: string; estado: string; cp: string;
+  numInt?: string; colonia: string; municipio: string; estado: string; cp: string;
   telefono: string; email: string; createdAt: string;
 }
 
@@ -18,6 +20,27 @@ export default function RemitentesPage() {
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [search, setSearch] = useState("");
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<Remitente | null>(null);
+  const [editError, setEditError] = useState("");
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const { setOverride } = useBreadcrumbOverrides();
+  const { setSelected } = useSelectedEntity();
+
+  function handleExpand(r: Remitente) {
+    const isExpanding = expandedId !== r.id;
+    setExpandedId(isExpanding ? r.id : null);
+    setEditing(null);
+    setEditError("");
+    if (isExpanding) {
+      setOverride("remitentes", "Remitentes");
+      setOverride(r.id, r.nombre);
+      setSelected({ type: "remitente", id: r.id, name: r.nombre });
+    } else {
+      setOverride(r.id, "");
+      setSelected(null);
+    }
+  }
 
   async function fetchItems(q = "") {
     try {
@@ -109,17 +132,86 @@ export default function RemitentesPage() {
             </tr></thead>
             <tbody>
               {items.map(r => (
-                <tr key={r.id} className="border-b border-[#DDE3EC] last:border-b-0 hover:bg-[#F8F9FB]">
-                  <td className="px-4 py-3 text-[#0F1F3D] font-medium">{r.nombre}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-[#4A5568]">{r.rfc}</td>
-                  <td className="px-4 py-3 text-[#4A5568]">{r.municipio}, {r.estado}</td>
-                  <td className="px-4 py-3 font-mono text-[#4A5568]">{r.cp}</td>
-                  <td className="px-4 py-3 text-[#4A5568]">{r.telefono}</td>
-                </tr>
+                <React.Fragment key={r.id}>
+                  <tr className="border-b border-[#DDE3EC] last:border-b-0 hover:bg-[#F8F9FB] cursor-pointer" onClick={() => handleExpand(r)}>
+                    <td className="px-4 py-3 text-[#E85D04] font-medium hover:underline">{r.nombre}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-[#4A5568]">{r.rfc}</td>
+                    <td className="px-4 py-3 text-[#4A5568]">{r.municipio}, {r.estado}</td>
+                    <td className="px-4 py-3 font-mono text-[#4A5568]">{r.cp}</td>
+                    <td className="px-4 py-3 text-[#4A5568]">{r.telefono}</td>
+                  </tr>
+                  {expandedId === r.id && (
+                    <tr><td colSpan={5} className="px-4 py-4 bg-[#F8F9FB]">
+                      {editing?.id === r.id ? (
+                        <EditForm
+                          item={editing}
+                          onChange={setEditing}
+                          error={editError}
+                          submitting={editSubmitting}
+                          onSave={async () => {
+                            setEditSubmitting(true); setEditError("");
+                            try {
+                              const res = await fetch(`/api/v1/remitentes`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...editing, _update: true }) });
+                              if (!res.ok) { const j = await res.json(); setEditError(j.errors?.[0]?.message ?? "Error"); return; }
+                              setEditing(null); fetchItems(search);
+                            } catch { setEditError("Error de conexión"); }
+                            finally { setEditSubmitting(false); }
+                          }}
+                          onCancel={() => { setEditing(null); setEditError(""); }}
+                        />
+                      ) : (
+                        <div>
+                          <dl className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm mb-4">
+                            <div><dt className="text-xs text-[#8A96A8]">Nombre</dt><dd className="text-[#0F1F3D]">{r.nombre}</dd></div>
+                            <div><dt className="text-xs text-[#8A96A8]">RFC</dt><dd className="text-[#0F1F3D] font-mono">{r.rfc}</dd></div>
+                            <div><dt className="text-xs text-[#8A96A8]">Dirección</dt><dd className="text-[#0F1F3D]">{r.calle} {r.numExt}{r.numInt ? ` Int. ${r.numInt}` : ""}</dd></div>
+                            <div><dt className="text-xs text-[#8A96A8]">Colonia</dt><dd className="text-[#0F1F3D]">{r.colonia}</dd></div>
+                            <div><dt className="text-xs text-[#8A96A8]">Municipio, Estado</dt><dd className="text-[#0F1F3D]">{r.municipio}, {r.estado}</dd></div>
+                            <div><dt className="text-xs text-[#8A96A8]">C.P.</dt><dd className="text-[#0F1F3D] font-mono">{r.cp}</dd></div>
+                            <div><dt className="text-xs text-[#8A96A8]">Teléfono</dt><dd className="text-[#0F1F3D]">{r.telefono}</dd></div>
+                            <div><dt className="text-xs text-[#8A96A8]">Email</dt><dd className="text-[#0F1F3D]">{r.email}</dd></div>
+                            <div><dt className="text-xs text-[#8A96A8]">Creado</dt><dd className="text-[#0F1F3D]">{new Date(r.createdAt).toLocaleDateString("es-MX")}</dd></div>
+                          </dl>
+                          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); setEditing({...r}); }}>Editar</Button>
+                        </div>
+                      )}
+                    </td></tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
         )}
+      </div>
+    </div>
+  );
+}
+
+
+function EditForm({ item, onChange, error, submitting, onSave, onCancel }: {
+  item: Remitente; onChange: (r: Remitente) => void; error: string; submitting: boolean;
+  onSave: () => void; onCancel: () => void;
+}) {
+  function set(field: keyof Remitente, value: string) { onChange({ ...item, [field]: value }); }
+  return (
+    <div className="space-y-3" onClick={e => e.stopPropagation()}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Nombre *</label><Input value={item.nombre} onChange={e => set("nombre", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">RFC *</label><Input value={item.rfc} onChange={e => set("rfc", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Calle *</label><Input value={item.calle} onChange={e => set("calle", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Núm. Ext. *</label><Input value={item.numExt} onChange={e => set("numExt", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Núm. Int.</label><Input value={item.numInt ?? ""} onChange={e => set("numInt", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Colonia *</label><Input value={item.colonia} onChange={e => set("colonia", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Municipio *</label><Input value={item.municipio} onChange={e => set("municipio", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Estado *</label><Input value={item.estado} onChange={e => set("estado", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">C.P. *</label><Input value={item.cp} onChange={e => set("cp", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Teléfono *</label><Input value={item.telefono} onChange={e => set("telefono", e.target.value)} /></div>
+        <div><label className="block text-xs text-[#8A96A8] mb-1">Email *</label><Input value={item.email} onChange={e => set("email", e.target.value)} /></div>
+      </div>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex gap-2">
+        <Button size="sm" onClick={onSave} disabled={submitting} className="bg-[#E85D04] hover:bg-[#F48C06] text-white">{submitting ? "Guardando..." : "Guardar"}</Button>
+        <Button size="sm" variant="outline" onClick={onCancel} disabled={submitting}>Cancelar</Button>
       </div>
     </div>
   );
