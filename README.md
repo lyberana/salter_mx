@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SALTER MX — Plataforma Logística
 
-## Getting Started
+Plataforma logística para GF SALTER (Servicios Alternativos). Gestión de envíos, órdenes de transporte, flota, importación masiva y más.
 
-First, run the development server:
+## Stack
+
+- Next.js 15 (App Router)
+- TypeScript
+- Drizzle ORM + PostgreSQL (Neon)
+- Auth.js v5 (credentials + JWT)
+- shadcn/ui + Tailwind CSS
+- Inngest (background jobs)
+- Pino (logging)
+- Docker Compose
+
+## Páginas Públicas
+
+| Ruta | Descripción |
+|------|-------------|
+| `/` | Landing page con hero, carousel de servicios, estadísticas y footer de contacto |
+| `/rastreo` | Demo de rastreo de envíos — ingresa un folio y visualiza un timeline de movimientos |
+| `/login` | Inicio de sesión |
+
+## Dashboard (autenticado)
+
+| Ruta | Descripción |
+|------|-------------|
+| `/dashboard` | Panel principal |
+| `/envios` | Gestión de envíos (CRUD, cambio de estado, historial) |
+| `/ordenes` | Órdenes de transporte |
+| `/flota` | Vehículos y operadores |
+| `/consignatarios` | Gestión de consignatarios |
+| `/remitentes` | Gestión de remitentes |
+| `/importacion` | Importación masiva CSV/XLSX |
+| `/audit-log` | Registro de auditoría (solo admin) |
+| `/usuarios` | Gestión de usuarios |
+
+## Inicio Rápido
 
 ```bash
+# Instalar dependencias
+npm install
+
+# Copiar variables de entorno
+cp .env.local.example .env.local
+
+# Levantar con Docker
+docker compose up
+
+# O desarrollo local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estructura del Proyecto
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── (auth)/          # Login, cambiar contraseña
+│   ├── (dashboard)/     # Páginas autenticadas
+│   ├── api/v1/          # API REST
+│   ├── rastreo/         # Demo pública de rastreo
+│   └── page.tsx         # Landing page
+├── components/
+│   └── ui/              # shadcn/ui (button, card, carousel, badge, etc.)
+├── lib/
+│   ├── db/              # Drizzle schema, migraciones
+│   ├── services/        # Lógica de negocio
+│   ├── repositories/    # Acceso a datos
+│   ├── inngest/         # Background jobs
+│   ├── middleware/       # Auth, idempotency
+│   └── utils/           # Validaciones (RFC, CP, etc.)
+└── auth.ts              # Configuración Auth.js
+```
 
-## Learn More
+## MCP (Model Context Protocol)
 
-To learn more about Next.js, take a look at the following resources:
+El proyecto tiene configurado el servidor MCP de shadcn para asistencia con componentes UI:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```json
+// .kiro/settings/mcp.json
+{
+  "mcpServers": {
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
+    }
+  }
+}
+```

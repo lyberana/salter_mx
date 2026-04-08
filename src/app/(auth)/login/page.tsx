@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -58,8 +60,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8F9FB]">
+    <div className="min-h-screen flex items-center justify-center bg-[#F8F9FB] px-4">
       <div className="w-full max-w-sm bg-white rounded-xl border border-[#DDE3EC] p-8 shadow-sm">
+        <div className="mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 text-sm text-[#8A96A8] hover:text-[#0F1F3D] transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Volver al inicio
+          </Link>
+        </div>
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-[#E85D04] rounded-lg flex items-center justify-center font-bold text-white text-sm">GF</div>
